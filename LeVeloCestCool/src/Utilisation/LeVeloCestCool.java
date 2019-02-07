@@ -14,8 +14,12 @@ public class LeVeloCestCool {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static void main(String[] args) 
+    {
+        Gestion g;
+        g = new Gestion();
+        g.initialisation();
+        g.accueil();
     }
     
 }

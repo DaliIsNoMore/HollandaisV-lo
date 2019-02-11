@@ -16,7 +16,7 @@ public class Velo {
     private Date dateMiseEnService;
     private EtatVelo etat;
     private StatutVelo statut;
-    private Borne borne=null;
+    private Borne borne;
     
 
     public Velo(Date dateMiseEnService, EtatVelo etat, StatutVelo statut) {
@@ -25,6 +25,7 @@ public class Velo {
         this.dateMiseEnService = dateMiseEnService;
         this.etat = etat;
         this.statut = statut;
+        this.borne= null;
     }
 
     public int getId() {

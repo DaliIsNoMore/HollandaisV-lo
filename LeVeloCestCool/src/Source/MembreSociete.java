@@ -24,25 +24,25 @@ abstract public class MembreSociete {
     nom=n;
     DateEmbauche=de;
     }
-    public String getlogin(){
+    public String getLogin(){
         return login;
     }
-    public String getmp(){
+    public String getMp(){
         return mp;
     }
-    public void setmp(String mp){
+    public void setMp(String mp){
         this.mp=mp;
     }
-    public String getprenom(){
+    public String getPrenom(){
         return prenom;
     }
-    public void setprenom(String prenom){
+    public void setPrenom(String prenom){
         this.prenom=prenom;
                 }
-    public String getnom(){
+    public String getNom(){
         return nom;
     }
-    public void setnom(String nom){
+    public void setNom(String nom){
         this.nom=nom;
     }
     public Date getDateEmbauche(){
@@ -52,7 +52,7 @@ abstract public class MembreSociete {
         this.DateEmbauche=DateEmbauche;
     }
     public String getInfos(){
-        return ("\nprenom: "+getprenom()+"\nnom: "+getnom()+"\nDateEmbauche: "+getDateEmbauche());
+        return ("\nprenom: "+getPrenom()+"\nnom: "+getNom()+"\nDateEmbauche: "+getDateEmbauche());
     }   
     
     }

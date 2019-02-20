@@ -12,37 +12,21 @@ import java.util.Date;
  * @author GREGO
  */
 public class Gestion {
-    
-    private ArrayList<Abonne>listeAbonne;
-    private ArrayList<Velo>listeVelo;
-    private ArrayList<Borne>listeBorne;
-    private ArrayList<EtatVelo>listeEtatVelo;
-    private ArrayList<FicheReparation>listeFicheReparation;
-    private ArrayList<Location>listeLocation;
-    private ArrayList<MembreSociete>listeMembreSociete;
-    private ArrayList<StatutVelo>listeStatutVelo;
-    private ArrayList<TypeReparation>listeTypeReparation;
-
+    private GestionAbonne ga;
+    private GestionTechnicien gt;
+    private GestionGestionnaire gg;
     
     public Gestion()
     {
-    listeAbonne = new ArrayList();
-    listeVelo= new ArrayList();
-    listeBorne= new ArrayList();
-    listeEtatVelo= new ArrayList();
-    listeFicheReparation= new ArrayList();
-    listeLocation= new ArrayList();
-    listeMembreSociete= new ArrayList();
-    listeStatutVelo= new ArrayList();
-    listeTypeReparation= new ArrayList();
+    ga = new GestionAbonne();
+    gt = new GestionTechnicien();
+    gg = new GestionGestionnaire();
     }
             
     public void accueil()
     {
         int choix;
-        
-        
-        
+
         System.out.println("Choisissez votre option");
         System.out.println("1: Se connecter");
         System.out.println("2: Créer un compte");
@@ -84,13 +68,13 @@ public class Gestion {
      }while(!(choix.equals("1") || choix.equals("2")));
      
      System.out.println("Saisissez votre login");
-     lg = saisieLogin();
+     lg = Clavier.lireString();
      System.out.println("Saisissez votre mot de passe");
      mp = Clavier.lireString();
      
      if (choix.equals("1"))
          {
-          a = rechercheAbonne(lg);
+          a = ga.rechercheAbonne(lg);
           if(a!=null)
           {
             do{
@@ -109,7 +93,7 @@ public class Gestion {
          {
              if(choix.equals("2"))
              {
-                 rechercheMembreSociete(lg);
+                 m = gg.rechercheMembreSociete(lg);
                  if(m!=null)
                 {
                     do{
@@ -256,7 +240,7 @@ public class Gestion {
     
     public void creerCompteAbonne()
     {
-        Abonne a;
+        
         String lg;
         String mp;
         String nom;
@@ -290,22 +274,23 @@ public class Gestion {
             confirmation = Clavier.lireString();
         }while(!confirmation.equals("1"));
         
-        a = new Abonne(lg,mp, nom, prenom, adresse, email, telephone, dateDebutAbonnement);
-        listeAbonne.add(a);
+        ga.creerAbonne(lg,mp, nom, prenom, adresse, email, telephone, dateDebutAbonnement);
+        
         
         System.out.println("Profil abonné créé");
     }
     
     public String verificationLoginAbonne()
-    {// modifier pour inclure la recherche
+    {
      
     String lg;
     Abonne a;
     boolean lgUnique ;
     
     do
-    {
-        lg = saisieLogin();
+    {   
+        System.out.println("Entrez le login de l'abonné");
+        lg = Clavier.lireString();
         a = rechercheAbonne(lg);
         lgUnique= true;
         if (a != null)
@@ -318,50 +303,25 @@ public class Gestion {
 
     return lg;
     }
-    public String saisieLogin()
-    {
-        String lg= null;
-        lg = Clavier.lireString();
-        return lg;
-    }
     public Abonne rechercheAbonne(String lg)
     {
         Abonne a = null;
-        int i=0;
         
-        if(!listeAbonne.isEmpty())
-        {
-            while(i<listeAbonne.size() && a ==null)
-            {
-                if(listeAbonne.get(i).getLogin().equals(lg))
-                {
-                    a = listeAbonne.get(i);
-                }
-                i++;
-            }
-        }
+        a = ga.rechercheAbonne(lg);
         if (a==null)
         {
             System.out.println("Abonne non trouvé");
         }
         return a;
     }
-public MembreSociete rechercheMembreSociete(String lg)
+    
+    
+    public MembreSociete rechercheMembreSociete(String lg)
     {
         MembreSociete m = null;
-        int i=0;
         
-        if(!listeMembreSociete.isEmpty())
-        {
-            while(i<listeMembreSociete.size() && m ==null)
-            {
-                if(listeMembreSociete.get(i).getLogin().equals(lg))
-                {
-                    m = listeMembreSociete.get(i);
-                }
-                i++;
-            }
-        }
+        m = gg.rechercheMembreSociete(lg);
+        
         if (m==null)
         {
             System.out.println("Membre non trouvé");
@@ -370,28 +330,7 @@ public MembreSociete rechercheMembreSociete(String lg)
     } 
         
     
-    public void initialisation()
-    {
-     initialiseTechnicien(); 
-     initialiseTest();
-    }
     
-    public void initialiseTechnicien()
-    {
-        String log = null;
-        String mp = null;
-        String prenom = null;
-        String nom = null;
-        Date date = new Date(1600-1900, 10-1, 10);
-        
-        Technicien t = new Technicien(log,mp, prenom, nom, date);
-        listeMembreSociete.add(t);        
-    }
-    
-    public void initialiseTest() 
-    {
-
-    }
     public void menuBorne(){
     int n;
     System.out.println("Que voulez vous faire?");
@@ -450,7 +389,7 @@ public MembreSociete rechercheMembreSociete(String lg)
 
 
         case 3 :
-            supprimerVelo();
+            //supprimerVelo();
             menuVelo();
             break;
 
@@ -462,78 +401,8 @@ public MembreSociete rechercheMembreSociete(String lg)
     }
 
 
-
-    public Borne CreerBorne()
-    {
-    Borne b;    
-    int id, i;
-    String adresse;
-    int placeMax;
-
-
-    System.out.println("Adresse de la borne: ");
-    adresse=Clavier.lireString();
-    System.out.println ("Nombre de place max: ");
-    placeMax=Clavier.lireInt();
-    b= new Borne (adresse,placeMax);
-    listeBorne.add(b);
-    return b;
-    }
-
-    public Borne RechercheBorne()
-    {
-    Borne b, trouve=null;
-    int id;
-    int i=0;
-    System.out.println("id de la borne: ");
-    id=Clavier.lireInt();
-    if (!listeBorne.isEmpty()){
-    while (i<listeBorne.size()&&trouve==null)
-    {
-    b=listeBorne.get(i);
-    if(b.getId()== id)
-    {
-    trouve=b;
-    }
-    }
-    }
-    return trouve;
-    }
-
-
-
-    public void supprimerVelo(){
-
-        int id;
-        Velo v=null;
-        int i=0;
-        boolean trouve=false;
-
-        System.out.println("ID du vélo que vous souhaitez supprimer");
-        id=Clavier.lireInt();
-
-        if(!listeVelo.isEmpty()){
-        do{
-        if(id==listeVelo.get(i).getId())
-        {
-            v=listeVelo.get(i);
-            trouve=true;
-        }  
-
-        i++;
-
-
-
-        }while(trouve==false && i<listeVelo.size());
-
-        if(trouve==false)
-        {
-        System.out.println("Désolé ID Vélo introuvable");
-        }
-
-        v.setStatut(listeStatutVelo.get(2));//ajouter en 3e position la destruction
-    }
-    }
+    
+   
 
     }
 

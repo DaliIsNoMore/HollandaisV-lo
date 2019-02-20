@@ -45,10 +45,13 @@ public static int getNb() {
         return placeMax;
     }
 
-    public void setPlaceMax(int placeMax) {
-        this.placeMax = placeMax;
-    }
      
-   
+   public void ajouterPlace (int nbplace){
+       this.placeMax= this.placeMax+nbplace;
+   }
     
+   public void supprimerPlace (int nbplace){
+       this.placeMax= this.placeMax-nbplace;
+   }
+  
 }

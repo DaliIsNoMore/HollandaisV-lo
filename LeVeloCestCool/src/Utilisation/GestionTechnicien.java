@@ -18,6 +18,7 @@ public class GestionTechnicien {
     private ArrayList<Borne>listeBorne;
     private ArrayList<TypeReparation>listeTypeReparation;
     private ArrayList<StatutVelo>listeStatutVelo;
+    private ArrayList<EtatVelo>listeEtatVelo;
         
     public GestionTechnicien(){
         listeFicheReparation = new ArrayList();
@@ -25,6 +26,15 @@ public class GestionTechnicien {
         listeBorne = new ArrayList();
         listeTypeReparation = new ArrayList();
         listeStatutVelo = new ArrayList();
+        listeEtatVelo = new ArrayList();
+    }
+
+    public ArrayList<EtatVelo> getListeEtatVelo() {
+        return listeEtatVelo;
+    }
+
+    public void setListeEtatVelo(ArrayList<EtatVelo> listeEtatVelo) {
+        this.listeEtatVelo = listeEtatVelo;
     }
     
     public ArrayList<FicheReparation> getListeFicheReparation() {
@@ -107,6 +117,55 @@ public class GestionTechnicien {
         return v;
         
     }
+    
+    public EtatVelo rechercheEtatVelo(int id){
+        EtatVelo e= null;
+        int i = 0;
+        
+        if(!listeEtatVelo.isEmpty()){
+            while(i<listeEtatVelo.size() && e == null){
+                if(listeEtatVelo.get(i).getId() == id){
+                    e = listeEtatVelo.get(i);
+                }
+            i++;
+            }
+        }
+        
+        return e;
+    }
+    
+    public ArrayList<EtatVelo> rechercheListeEtatVelo(){
+        ArrayList<EtatVelo> e= listeEtatVelo;
+        
+        return e;
+    }
+    public ArrayList<StatutVelo> rechercheListeStatutVelo(){
+        ArrayList<StatutVelo> s= listeStatutVelo;
+        
+        return s;
+    }
+    
+    public ArrayList<Borne> rechercheListeBorne(){
+        ArrayList<Borne> b= listeBorne;
+        
+        return b;
+    }
+    
+    public StatutVelo rechercheStatutVelo(int id){
+        StatutVelo s= null;
+        int i = 0;
+        
+        if(!listeStatutVelo.isEmpty()){
+            while(i<listeStatutVelo.size() && s == null){
+                if(listeStatutVelo.get(i).getId() == id){
+                    s = listeStatutVelo.get(i);
+                }
+            i++;
+            }
+        }
+        
+        return s;
+    }
 
     public boolean modifierVelo(int id, int choix, Date date, EtatVelo etat, StatutVelo statut, Borne borne){
         Velo v=null;
@@ -182,14 +241,13 @@ public class GestionTechnicien {
 
         return listeVeloBorne;
     }
+
     
     public ArrayList<Velo> listeVeloBorne (int id){
         int i = 0;
-        Borne b=null;
         ArrayList<Velo>listeVeloBorne;
         listeVeloBorne = new ArrayList();
 
-        b=rechercheBorne(id);
         for(i=0;i<listeVelo.size();i++){
             if(listeVelo.get(i).getBorne().getId()==id){
                 listeVeloBorne.add(listeVelo.get(i));
@@ -220,16 +278,7 @@ public class GestionTechnicien {
         }
         return effectuer;
         }
-
-     public Velo CreerVelo (Date dateMiseEnService, EtatVelo etat, StatutVelo statut, Borne borne)
-    {
-        Velo v;
-        v= new Velo (dateMiseEnService,etat,statut);
-        v.setBorne(borne);
-        listeVelo.add(v);
-        return v;
-        
-    }
+ 
      
     public FicheReparation creerFicheReparation(Date d,Double pr, String p, TypeReparation tr, Velo v, Technicien t){
         FicheReparation f;
@@ -238,5 +287,81 @@ public class GestionTechnicien {
     
         return f;
     }
+    
+    public boolean verificationFicheReparation(int id){
+    boolean verif=true;
+    int i=0;
+    
+    while(i<listeFicheReparation.size()&& verif==true){
+        if(listeFicheReparation.get(i).getVelo().getId()==id){
+            verif=false;
+            i++;
+        }
+    }
+    return verif;  
+    }
 
+    public boolean finaliserFicheReparation(int id){
+           Velo v;
+           FicheReparation fr=null;
+           int i =0;
+           boolean finaliser=false;
+
+           v=rechercheVelo(id);
+           if (null!=v){
+               for(i=0;i<listeFicheReparation.size();i++){
+                   if(listeFicheReparation.get(i).getVelo().getId()==id){
+                       fr=listeFicheReparation.get(i);
+                   }
+
+               }
+
+
+            fr.getVelo().setStatut(null);
+            fr.getVelo().setEtat(listeEtatVelo.get(2));
+
+
+            fr.setDateFinReparation(new Date());  
+            finaliser =true;
+           }
+          return  finaliser;
+    }
+    
+    public boolean deposerVelo(Velo v, Borne b){
+        boolean deposer=false;
+        int idb;
+        ArrayList<Velo>listeVeloBorne;
+        listeVeloBorne = new ArrayList();
+
+        idb=b.getId();
+           listeVeloBorne=listeVeloBorne(idb);
+        if(listeVeloBorne.size()<b.getPlaceMax()){
+            v.setBorne(b);
+            deposer=true;
+            }
+
+        return deposer;
+    }
+    
+    public TypeReparation rechercheTypeReparation(int id ){
+      TypeReparation t=null, trouve=null;
+      int i=0;
+        if (!listeTypeReparation.isEmpty()){
+            while (i<listeTypeReparation.size()&&trouve==null){
+                t=listeTypeReparation.get(i);
+                if(t.getId()== id){
+                    trouve=t;
+                }
+            }
+        }
+
+        return trouve;
+    }
+
+
+
+
+
+            
 }
+

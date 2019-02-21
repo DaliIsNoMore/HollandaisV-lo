@@ -31,7 +31,7 @@ public static int getNb() {
         return nb;
     }
 
-    public String getstatut() {
+    public String getStatut() {
         return statut;
     }
 

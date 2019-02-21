@@ -128,6 +128,7 @@ public class Gestion {
         System.out.println("2: Supprimer compte");
         System.out.println("3: Créer location");
         System.out.println("4: Modifier location");
+        System.out.println("Autre: retour à l'accueil");
         choix = Clavier.lireInt();
         
         switch (choix)
@@ -148,6 +149,7 @@ public class Gestion {
                 //modifierLocation();
                 menuAbonne();
                 break;
+            default: accueil();
         }
         
     }
@@ -368,41 +370,239 @@ public class Gestion {
     public void menuVelo(){
     int n;
     System.out.println("Que voulez vous faire?");
-    System.out.println("Créer un vélo");
-    System.out.println("Modifier un vélo ");
-    System.out.println("Supprimer un vélo");
+    System.out.println("1: Créer un vélo");
+    System.out.println("2: Modifier un vélo ");
+    System.out.println("3: Supprimer un vélo");
+    System.out.println("Autre: retour au menu précédent");
 
     n=Clavier.lireInt();
 
     switch (n){
 
         case 1 :
-            //creerVelo();
+            creerVelo();
             menuVelo();
             break;
 
 
         case 2:
-            //modifierVelo();
+            modifierVelo();
             menuVelo();
             break;
 
 
         case 3 :
-            //supprimerVelo();
+            supprimerVelo();
             menuVelo();
             break;
 
 
 
         default :
-            menuGestionnaire();        
+            menuTechnicien();        
     }
     }
-
-
     
-   
-
+    public void supprimerVelo(){
+        int id;
+        
+        System.out.print("Saisir l'id du vélo à détruire");
+        id = Clavier.lireInt();
+        
+        if(gt.supprimerVelo(id)){
+            System.out.print("Suppression effectuée");
+        }
     }
+
+    public void creerVelo(){
+        Velo v= null;
+        Date d;
+        int jour;
+        int mois;
+        int annee;
+        EtatVelo e = null;
+        StatutVelo s = null;
+        Borne b ;
+        int idStatutVelo = -1;
+        int idEtatVelo = -1;
+        int idBorne = -1;
+        
+        
+        System.out.println("Veuillez rentrer la date de création de velo:");
+        System.out.println("Quel jour?");
+        jour = Clavier.lireInt();
+        System.out.println("Quel mois ?");
+        mois = Clavier.lireInt();
+        System.out.println("Quelle année?");
+        annee = Clavier.lireInt();
+        
+        d = new Date(annee - 1900, mois-1, jour);
+        
+        do{
+            afficherListeStatutVeloM();
+            System.out.println("Choisissez votre option");
+            idStatutVelo = Clavier.lireInt()-1;
+            if (idStatutVelo<0 || idStatutVelo>(gt.rechercheListeStatutVelo().size()-1)){
+                System.out.println("Veuillez rentrer un nombre disponible");
+            }
+        }while(idStatutVelo<0 || idStatutVelo>(gt.rechercheListeStatutVelo().size()-1));
+        
+        s = gt.rechercheStatutVelo(idStatutVelo);
+        
+        do{
+            afficherListeEtatVeloM();
+            System.out.println("Choisissez votre option");
+            idEtatVelo = Clavier.lireInt()-1;
+            if (idEtatVelo<0 || idEtatVelo>(gt.rechercheListeEtatVelo().size()-1)){
+                System.out.println("Veuillez rentrer un nombre disponible");
+            }
+        }while(idEtatVelo<0 || idEtatVelo>(gt.rechercheListeEtatVelo().size()-1));
+        
+        e = gt.rechercheEtatVelo(idEtatVelo);
+        do{
+            afficherListeBorneM();
+            System.out.println("Choisissez votre option");
+            System.out.println("0 : ne pas enregistrer la borne");
+            idBorne = Clavier.lireInt()-1;
+            
+            if (idBorne<-1 || idBorne>(gt.rechercheListeBorne().size()-1)){
+                System.out.println("Veuillez rentrer un nombre disponible");
+            }
+        }while(idBorne<-1 || idBorne>(gt.rechercheListeBorne().size()-1));
+        
+        if (idBorne == -1){
+            b = null;
+        }
+        else{
+            b= gt.rechercheBorne(idBorne);
+        }
+        
+        v =gt.creerVelo(d, e, s, b);
+        
+    }
+    
+    public void afficherListeStatutVeloM(){
+        ArrayList<StatutVelo>rechercheListeStatutVelo = gt.rechercheListeStatutVelo();
+        int i = 0;
+        
+        for (i=0;i<rechercheListeStatutVelo.size();i++){
+            i++;
+            System.out.println(i + " : "+ rechercheListeStatutVelo.get(i).getStatut());
+            i--;
+        }
+    }
+    
+    public void afficherListeEtatVeloM(){
+        ArrayList<EtatVelo>rechercheListeEtatVelo = gt.rechercheListeEtatVelo();
+        int i = 0;
+        
+        for (i=0;i<rechercheListeEtatVelo.size();i++){
+            i++;
+            System.out.println(i + " : "+ rechercheListeEtatVelo.get(i).getEtat());
+            i--;
+        }
+    }
+    
+    public void afficherListeBorneM(){
+        ArrayList<Borne>rechercheListeBorne = gt.rechercheListeBorne();
+        int i = 0;
+        
+        for (i=0;i<rechercheListeBorne.size();i++){
+            i++;
+            System.out.println(i + " : "+ rechercheListeBorne.get(i).getInfo());
+            i--;
+        }
+    }
+
+    public void modifierVelo(){
+        int id = 0;
+        int choix= 0;
+        Date d = null;
+        int jour;
+        int mois;
+        int annee;
+        EtatVelo e = null;
+        StatutVelo s = null;
+        Borne b = null;
+        int idStatutVelo = -1;
+        int idEtatVelo = -1;
+        int idBorne = -1;
+        
+        System.out.println("Entre l'identifiant du vélo à modifier");
+        id = Clavier.lireInt();
+        
+        System.out.println("Entre votre choix:");
+        System.out.println("1: modifier la date");
+        System.out.println("2: Changer l'etat du vélo");
+        System.out.println("3: Changer le statut du vélo");
+        System.out.println("4: Changer la borne du vélo");
+        
+        switch(choix){
+            case 1 :
+                System.out.println("Veuillez rentrer la date de création de velo:");
+                System.out.println("Quel jour?");
+                jour = Clavier.lireInt();
+                System.out.println("Quel mois ?");
+                mois = Clavier.lireInt();
+                System.out.println("Quelle année?");
+                annee = Clavier.lireInt();
+
+                d = new Date(annee - 1900, mois-1, jour);
+                break;
+                
+            case 2:
+                do{
+                    afficherListeStatutVeloM();
+                    System.out.println("Choisissez votre option");
+                    idStatutVelo = Clavier.lireInt()-1;
+                    if (idStatutVelo<0 || idStatutVelo>(gt.rechercheListeStatutVelo().size()-1)){
+                        System.out.println("Veuillez rentrer un nombre disponible");
+                    }
+                }while(idStatutVelo<0 || idStatutVelo>(gt.rechercheListeStatutVelo().size()-1));
+
+                s = gt.rechercheStatutVelo(idStatutVelo);
+                break;
+                
+            case 3:
+                do{
+                    afficherListeEtatVeloM();
+                    System.out.println("Choisissez votre option");
+                    idEtatVelo = Clavier.lireInt()-1;
+                    if (idEtatVelo<0 || idEtatVelo>(gt.rechercheListeEtatVelo().size()-1)){
+                        System.out.println("Veuillez rentrer un nombre disponible");
+                    }
+                }while(idEtatVelo<0 || idEtatVelo>(gt.rechercheListeEtatVelo().size()-1));
+
+                e = gt.rechercheEtatVelo(idEtatVelo);
+                break;
+                
+            case 4:
+                do{
+                    afficherListeBorneM();
+                    System.out.println("Choisissez votre option");
+                    System.out.println("0 : ne pas enregistrer la borne");
+                    idBorne = Clavier.lireInt()-1;
+
+                    if (idBorne<-1 || idBorne>(gt.rechercheListeBorne().size()-1)){
+                        System.out.println("Veuillez rentrer un nombre disponible");
+                    }
+                }while(idBorne<-1 || idBorne>(gt.rechercheListeBorne().size()-1));
+
+                if (idBorne == -1){
+                    b = null;
+                }
+                else{
+                    b= gt.rechercheBorne(idBorne);
+                }
+                break;
+        }
+        if(gt.modifierVelo(id, choix, d, e, s, b)){
+            System.out.println("modification effectuée");
+        }
+        
+        
+    }
+    
+    
+}
 

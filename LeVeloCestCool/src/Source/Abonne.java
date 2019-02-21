@@ -20,6 +20,7 @@ public class Abonne {
     private String email;
     private String telephone;
     private Date dateDebutAbonnement;
+    private String message;
     
     public Abonne(String lg, String m, String n, String p, String a, String e, String t, Date d)
     {
@@ -31,6 +32,15 @@ public class Abonne {
      email=e;
      telephone=t;
      dateDebutAbonnement=d;
+     message = "";
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
     
     public String getLogin() {
@@ -92,4 +102,7 @@ public class Abonne {
     public void setDateDebutAbonnement(Date dateDebutAbonnement) {
         this.dateDebutAbonnement = dateDebutAbonnement;
     }
+    
+   
+
 }

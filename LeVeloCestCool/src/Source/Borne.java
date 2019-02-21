@@ -53,5 +53,9 @@ public static int getNb() {
    public void supprimerPlace (int nbplace){
        this.placeMax= this.placeMax-nbplace;
    }
-  
+   
+   public String getInfo(){
+    String s;
+    return s = "Id: "+getId() + "Adresse: "+ getAdresse()+ "Nombre de place: "+ getPlaceMax();
+   }
 }

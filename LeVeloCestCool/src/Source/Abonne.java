@@ -103,6 +103,17 @@ public class Abonne {
         this.dateDebutAbonnement = dateDebutAbonnement;
     }
     
+    public String getInfo(){
+        String s;
+        return s = "Nom : " + getNom()
+                   + "     Prénom: " + getPrenom()
+                   + "Email : " + getEmail()
+                   + "\nTelephone: " + getTelephone()
+                   + "\nAdresse: \n" + getAdresse()
+                   + "\nDate de début d'Abonnement" + getDateDebutAbonnement()
+                ;
+    }
+    
    
 
 }

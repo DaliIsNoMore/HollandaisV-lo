@@ -79,21 +79,41 @@ public class GestionAbonne {
     return l;
     }
     
-    public boolean modifierAbonne (Abonne a, int choix, String adresse, String telephone, Date dateDebutAbonnement){
+    public boolean modifierAbonne (Abonne a, int choix, String mp, String nom, String prenom, String adresse,String mail, String telephone, Date dateDebutAbonnement){
     boolean effectuer=false;
      
     switch (choix){
-        case 1:
+        case 1 :
+            a.setMp(mp);
+            effectuer=true;
+            break;
+            
+        case 2 :
+            a.setNom(nom);
+            effectuer=true;
+            break;
+            
+        case 3 :
+            a.setPrenom(prenom);
+            effectuer=true;
+            break;
+            
+        case 4:
             a.setDateDebutAbonnement(dateDebutAbonnement);
             effectuer=true;
             break;
 
-        case 2 :
+        case 5 :
             a.setAdresse(adresse);
             effectuer=true;
             break;
+            
+        case 6 :
+            a.setEmail(mail);
+            effectuer=true;
+            break;
 
-        case 3 :
+        case 7 :
             a.setTelephone(telephone);
             effectuer=true;
             break;

@@ -80,7 +80,7 @@ public class Gestion {
             do{
                 if (a.getMp().equals(mp)) 
                 {
-                    menuAbonne();
+                    menuAbonne(a);
                 } 
                 else
                 {
@@ -101,11 +101,11 @@ public class Gestion {
                         {
                             if (m instanceof Gestionnaire)
                             {
-                                menuGestionnaire();
+                                menuGestionnaire((Gestionnaire)m);
                             }
                             else
                             {
-                                menuTechnicien();
+                                menuTechnicien((Technicien)m);
                             }
                         } 
                         else
@@ -116,10 +116,11 @@ public class Gestion {
                 } 
              }
          }
-     
+    accueil();
+    
     }
     
-    public void menuAbonne()
+    public void menuAbonne(Abonne a)
     {
         int choix;
         
@@ -129,59 +130,185 @@ public class Gestion {
         System.out.println("3: Créer location");
         System.out.println("4: Modifier location");
         System.out.println("Autre: retour à l'accueil");
+        System.out.println("Message :\n" + a.getMessage());
         choix = Clavier.lireInt();
         
         switch (choix)
         {
             case 1:
-                //modifierCompteAbonne();
-                menuAbonne();
+                modifierCompteAbonne(a);
+                menuAbonne(a);
                 break;
             case 2:
-                //supprimerCompteAbonne();
-                menuAbonne();
+                //supprimerCompteAbonne(a);
+                menuAbonne(a);
                 break;
             case 3:
                 //créerLocation();
-                menuAbonne();
+                menuAbonne(a);
                 break;
             case 4:
                 //modifierLocation();
-                menuAbonne();
+                menuAbonne(a);
                 break;
             default: accueil();
         }
         
     }
-    public void menuGestionnaire()
+    
+    public void modifierCompteAbonne(Abonne a){
+    String mp="";
+    String nom="";
+    String prenom="";
+    String adresse="";
+    String email="";
+    String telephone="";
+
+    Date dateDebutAbonnement = null;
+    int choix;
+        
+        System.out.println("Entre votre choix:");
+        System.out.println("1: modifier le mot de passe");
+        System.out.println("2: Changer le nom");
+        System.out.println("3: Changer le prenom");
+        System.out.println("4: Changer l'adresse");
+        System.out.println("5: Changer l'email");
+        System.out.println("6 Changer le telehpone");
+        System.out.println("7 Changer la date");
+        choix = Clavier.lireInt();
+        
+        switch(choix){
+            case 1 :
+                System.out.println("Votre nouveau mot de passe");
+                mp = Clavier.lireString();
+               
+                break;
+                
+            case 2:
+                System.out.println("Votre nouveau nom");
+                nom = Clavier.lireString();
+                break;
+                
+            case 3:
+                System.out.println("Votre nouveau prenom");
+                prenom = Clavier.lireString();
+                break;
+                
+            case 4:
+                System.out.println("Votre nouvelle adresse");
+                adresse = Clavier.lireString();
+                break;
+                
+            case 5:
+                System.out.println("Votre nouveau email");
+                email = Clavier.lireString();
+                break;
+            case 6:
+                System.out.println("Votre nouveau numéro de téléphone");
+                telephone = Clavier.lireString();
+                break;
+                
+            case 7:
+                System.out.println("Votre nouvelle date");
+                System.out.println("Jour");
+                int jour = Clavier.lireInt();
+                System.out.println("Mois");
+                int mois = Clavier.lireInt();
+                System.out.println("Annee");
+                int annee = Clavier.lireInt();
+                dateDebutAbonnement = new Date(annee- 1900,mois-1,jour);
+                
+                break;
+                
+            
+        }
+        if(ga.modifierAbonne(a,choix,mp,nom,prenom,adresse,email,telephone,dateDebutAbonnement)){
+            System.out.println("modification effectuée");
+        }
+    }
+
+    
+    
+    public void menuGestionnaire(Gestionnaire m)
     {
         int choix;
         
         System.out.println("Choisissez votre option:");
-        System.out.println("1: afficher Abonné");
-        System.out.println("2: message Abonné");
+        System.out.println("1: Contacter abonnés avec une location en retard");
+        System.out.println("2: Rappel d'expiration de la location aux Abonnés");
         System.out.println("3: Afficher la liste de vélo à envoyer en réparation");
         choix = Clavier.lireInt();
         
         switch (choix)
         {
             case 1:
-                //afficherAbonne();
-                menuGestionnaire();
+                //abonneRetard();
+                menuGestionnaire(m);
                 break;
             case 2:
-                //messageAbonne();
-                menuGestionnaire();
+                //abonneRappelExpiration();
+                menuGestionnaire(m);
                 break;
             case 3:
                 //afficherVeloReparation();
-                menuGestionnaire();
+                menuGestionnaire(m);
                 break;
         }
         
     }
     
-    public void menuTechnicien()
+    public void abonneRetard(){
+        ArrayList<Location>listeLocation = ga.getListeLocation();
+        ArrayList<Abonne>listeAbonne;
+        int i = 0;
+        
+        listeAbonne = gg.abonneRetard(listeLocation);
+        if (!listeAbonne.isEmpty()){
+            for(i=0;i<listeAbonne.size();i++ ){
+                ga.rechercheAbonne(listeAbonne.get(i).getLogin()).setMessage("Votre location à expiré, vous êtes priez de rendre votre vélo");
+                System.out.println(listeAbonne.get(i).getInfo());
+            }
+        }
+        else{
+            System.out.println("Pas de locations en retard");
+        }
+        
+    }
+    
+    public void abonneRappelExpiration(){
+        ArrayList<Location>listeLocation = ga.getListeLocation();
+        
+        listeLocation = gg.rappelAbonne(listeLocation);
+        
+        ga.setListeLocation(listeLocation);
+        System.out.println("Le message de rappel à été envoyé aux abonnés");
+    }
+    
+    public void afficherVeloReparation(){
+        ArrayList<Velo>listeVeloMauvaisEtat = gt.getListeVelo(); 
+        ArrayList<EtatVelo>listeEtatVelo = gt.getListeEtatVelo();
+        Technicien t =null;
+        int i;
+        
+        listeVeloMauvaisEtat = gg.RechercheVeloMauvaisEtat(listeVeloMauvaisEtat, listeEtatVelo);
+        if(!listeVeloMauvaisEtat.isEmpty()){
+            for(i = 0;i<listeVeloMauvaisEtat.size();i++){
+                System.out.println("Velo en mauvais état :"+listeVeloMauvaisEtat.get(i).getInfo());
+            }
+
+            i = 0;
+
+            while(i<gg.getListeMembreSociete().size()&& t==null){
+                if (gg.getListeMembreSociete().get(i) instanceof Technicien){
+                    t = (Technicien)gg.getListeMembreSociete().get(i);
+                    t.setListeVeloMauvaisEtat(listeVeloMauvaisEtat);
+                }
+                i++;
+            }
+        }
+    }
+    
+    public void menuTechnicien(Technicien t)
     {
         int choix;
         
@@ -201,39 +328,39 @@ public class Gestion {
         {
             case 1:
                 //creerBorne();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             case 2:
                 //modifierBorne();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             case 3:
                 //supprimerBorne();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             case 4:
                 //creerVelo();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             case 5:
                 //modifierVelo();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             case 6:
                 //supprimerVelo();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             case 7:
                 //creerReparation();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             case 8:
                 //modifierReparation();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             case 9:
                 //modifierBorneVelo();
-                menuTechnicien();
+                menuTechnicien(t);
                 break;
             
         }
@@ -333,7 +460,7 @@ public class Gestion {
         
     
     
-    public void menuBorne(){
+    public void menuBorne(Technicien t){
     int n;
     System.out.println("Que voulez vous faire?");
     System.out.println("Créer une nouvelle borne");
@@ -346,28 +473,106 @@ public class Gestion {
 
         case 1 :
             //creerBorne();
-            menuBorne();
+            menuBorne(t);
             break;
 
 
         case 2:
             //modifierBorne();
-            menuBorne();
+            menuBorne(t);
             break;
 
 
         case 3 :
             //supprimerBorne();
-            menuBorne();
+            menuBorne(t);
             break;
 
 
 
         default :
-            menuTechnicien();        
+            menuTechnicien(t);        
     }
+    
     }
-    public void menuVelo(){
+    
+    public Borne creerBorne(){
+        Borne b;
+        String adresse;
+        int placemax;
+        
+        System.out.println("Rentrez l'adresse de la borne");
+        adresse=Clavier.lireString();
+        System.out.println("Rentrez le nombre de place maximum pour cette nouvelle borne");
+        placemax=Clavier.lireInt();
+        
+        b=gt.creerBorne(adresse, placemax);
+        
+        return b;
+    }
+    
+    
+    public void modifierBorne(){
+        int choix, id, nbplace=0;
+        ArrayList<Velo>listeVeloBorne;
+        
+        System.out.println("Entre l'identifiant de la borne à modifier");
+        id = Clavier.lireInt();
+        listeVeloBorne=gt.listeVeloBorne(id);
+        
+        System.out.println("Entre votre choix:");
+        System.out.println("1: Ajouter des places disponibles à la borne");
+        System.out.println("2: Diminuer le nombre de place disponible");
+        choix=Clavier.lireInt();
+        
+        switch(choix){
+            
+            case 1:
+                System.out.println("Entrez le nombre de place à ajouter ");
+                nbplace=Clavier.lireInt();
+                break;
+                
+            
+            case 2 :
+                do{
+                   System.out.println("Nombre de place à retirer");
+                    nbplace=Clavier.lireInt();
+                
+                    if(listeVeloBorne.get(0).getBorne().getPlaceMax()-nbplace <listeVeloBorne.size()){
+                        System.out.println("Impossible de retirer ce nombre de place car trop de vélo sont attachés à cette borne");
+                    }
+                    
+                }while(listeVeloBorne.get(0).getBorne().getPlaceMax()-nbplace <listeVeloBorne.size());
+                break;
+        }
+        
+        if(gt.modifierBorne(id, choix, nbplace)){
+            System.out.println("Modification effectuée");
+        }
+
+    }
+    
+
+    public void supprimerBorne(){
+        int id;
+        int i = 0;
+        
+        System.out.print("Saisir l'id de la borne à détruire");
+        id = Clavier.lireInt();
+        
+        if(gt.supprimerBorne(id).isEmpty()){
+            System.out.print("Suppression effectuée");
+        }
+        else{
+            System.out.println("Le(s) vélo(s) suivant est(sont) encore attaché(s) à la borne, veuillez les détacher :");
+            for(i=0;i<gt.supprimerBorne(id).size();i++){
+                System.out.println("id : " +gt.supprimerBorne(id).get(i).getId());
+            }
+        }
+    }
+
+
+    public void menuVelo(Technicien t){
     int n;
     System.out.println("Que voulez vous faire?");
     System.out.println("1: Créer un vélo");
@@ -381,25 +586,25 @@ public class Gestion {
 
         case 1 :
             creerVelo();
-            menuVelo();
+            menuVelo(t);
             break;
 
 
         case 2:
             modifierVelo();
-            menuVelo();
+            menuVelo(t);
             break;
 
 
         case 3 :
             supprimerVelo();
-            menuVelo();
+            menuVelo(t);
             break;
 
 
 
         default :
-            menuTechnicien();        
+            menuTechnicien(t);        
     }
     }
     

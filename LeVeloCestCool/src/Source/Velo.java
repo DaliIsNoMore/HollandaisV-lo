@@ -70,10 +70,13 @@ public class Velo {
         this.borne = borne;
     }
     
-  
-  
-  
-    
-            
-    
+    public String getInfo(){
+        String s;
+        return s  = "Id: " + getId()
+                   +"\nDate de mise en service: " + getDateMiseEnService()
+                   +"\nEtat: " + getEtat().getEtat()
+                   +"\nStatut: " + getStatut().getStatut()
+                   +"\nBorne: " + getBorne().getInfo()
+                ;
+    }
 }

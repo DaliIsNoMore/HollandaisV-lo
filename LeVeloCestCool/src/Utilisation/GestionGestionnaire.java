@@ -68,27 +68,25 @@ public class GestionGestionnaire {
         return listeAbonneRetard;
     }
     
-    public boolean rappelAbonne(ArrayList<Location>listeLocation){
-        boolean effectuer = false;
+    public ArrayList<Location> rappelAbonne(ArrayList<Location>listeLocation){
+        
         Date d = new Date();
         int differenceReelle;
         int jourDifference = 23;
+        int jourDifferenceMax = 30;
         long valeurDateDebut;
         long valeurDateFin = d.getTime();
         long valeurDateDifference = jourDifference* 86400000;
+        long valeurDateDifferenceMax = jourDifferenceMax* 86400000;
         String message ;
         
         if (!listeLocation.isEmpty()){
             for (int i = 0; i<listeLocation.size();i++){
                 if (listeLocation.get(i).getDateFin() == null){
                     valeurDateDebut = listeLocation.get(i).getDateDebut().getTime();
-                    if (valeurDateFin - valeurDateDebut > valeurDateDifference){
+                    if ((valeurDateFin - valeurDateDebut > valeurDateDifference)&&(valeurDateFin - valeurDateDebut < valeurDateDifferenceMax)){
                         differenceReelle = (int)((valeurDateFin - valeurDateDebut)/86400000);
                         message = "Votre location expire dans " + differenceReelle + " jour(s)";
-                        listeLocation.get(i).getAbonne().setMessage(message);
-                    }
-                    else{
-                        message = "";
                         listeLocation.get(i).getAbonne().setMessage(message);
                     }
                 }
@@ -96,7 +94,7 @@ public class GestionGestionnaire {
         }
         
         
-        return effectuer;
+        return listeLocation;
     }
     
     public ArrayList<Velo> RechercheVeloMauvaisEtat(ArrayList<Velo>listeVelo, ArrayList<EtatVelo>listeEtatVelo){

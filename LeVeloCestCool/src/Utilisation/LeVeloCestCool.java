@@ -18,6 +18,7 @@ public class LeVeloCestCool {
     {
         Gestion g;
         g = new Gestion();
+        g.initialisation();
         g.accueil();
     }
     

@@ -71,10 +71,10 @@ public class GestionAbonne {
     Location l= null;
     StatutVelo s = listeStatutVelo.get(0);
     
-    if (velo.getStatut().equals(listeStatutVelo.get(3).getStatut())){
-    l=new Location (dateDebut, abonne, velo);
-    listeLocation.add(l);
-    velo.setStatut(s);
+    if (velo.getStatut().getStatut().equalsIgnoreCase("Disponible")){
+        l=new Location (dateDebut, abonne, velo);
+        listeLocation.add(l);
+        velo.setStatut(s);
     }
     
     return l;
@@ -186,8 +186,8 @@ public class GestionAbonne {
         int i = listeLocation.size();
         
         while (i>0&&l == null){
-            if(a==listeLocation.get(i).getAbonne()){
-                    l=listeLocation.get(i);
+            if(a==listeLocation.get(i-1).getAbonne()){
+                    l=listeLocation.get(i-1);
             }
             i--;
         }

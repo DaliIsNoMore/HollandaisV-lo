@@ -247,7 +247,7 @@ public class GestionTechnicien {
         int i = 0;
         ArrayList<Velo>listeVeloBorne;
         listeVeloBorne = new ArrayList();
-
+ 
         for(i=0;i<listeVelo.size();i++){
             if(listeVelo.get(i).getBorne().getId()==id){
                 listeVeloBorne.add(listeVelo.get(i));
@@ -332,8 +332,9 @@ public class GestionTechnicien {
         int idb;
         ArrayList<Velo>listeVeloBorne;
         listeVeloBorne = new ArrayList();
-
+        
         idb=b.getId();
+        if (!listeVeloBorne.isEmpty())
            listeVeloBorne=listeVeloBorne(idb);
         if(listeVeloBorne.size()<b.getPlaceMax()){
             v.setBorne(b);

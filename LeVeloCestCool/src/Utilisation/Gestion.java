@@ -265,13 +265,13 @@ public class Gestion {
         for (int i = 0; i<gt.afficherVeloDisponible().size();i++){
             System.out.println(gt.afficherVeloDisponible().get(i).getInfo());
         }
-        System.out.print("Selectionnez le vélo en tappant l'id de votre choix");
+        System.out.println("Selectionnez le vélo en tappant l'id de votre choix");
         id = Clavier.lireInt();
         
         v= gt.rechercheVelo(id);
         l = ga.creerLocation(d, a, v, listeStatutVelo);
-        ga.getListeLocation().add(l);
         
+        System.out.println(l.getInfo());
         return l;
     }
     
@@ -439,7 +439,7 @@ public class Gestion {
         
         for (i=0;i<rechercheListeTypeReparation.size();i++){
             i++;
-            System.out.println(i + " : "+ rechercheListeTypeReparation.get(i).getType());
+            System.out.println(i + " : "+ rechercheListeTypeReparation.get(i-1).getType());
             i--;
         }
       } 
@@ -903,7 +903,7 @@ public void transfererBorneVelo(int id){
         
         for (i=0;i<rechercheListeEtatVelo.size();i++){
             i++;
-            System.out.println(i + " : "+ rechercheListeEtatVelo.get(i).getEtat());
+            System.out.println(i + " : "+ rechercheListeEtatVelo.get(i-1).getEtat());
             i--;
         }
     }
@@ -1026,7 +1026,7 @@ public void  initialisation(){
         x =i+ "Luix";
         g = new Gestionnaire(x, x, "Jean "+x, "Roger "+x, new Date());
         gg.getListeMembreSociete().add(g);
-        System.out.println("Profil Gestionnaire : " + g.getInfos() + "\n");
+        System.out.println("Profil Gestionnaire : " + g.getInfos() + "Id & mp: " + x + "\n");
     }
     System.out.println("---------------- Gestionnaires initialisés ---------------");
     i = 0;
@@ -1034,7 +1034,7 @@ public void  initialisation(){
         x =i+ "Lui";
         t = new Technicien(x, x, "Michel "+x, "Patrick "+x, new Date());
         gg.getListeMembreSociete().add(t);
-        System.out.println("Profil Technicien : " + t.getInfos() + "\n");
+        System.out.println("Profil Technicien : " + t.getInfos()+ "Id & mp: " + x + "\n");
     }
     
     

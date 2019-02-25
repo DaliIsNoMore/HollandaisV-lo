@@ -72,11 +72,19 @@ public class Velo {
     
     public String getInfo(){
         String s;
-        return s  = "Id: " + getId()
+        if (getBorne() != null){
+            s  = "Id: " + getId()
                    +"\nDate de mise en service: " + getDateMiseEnService()
                    +"\nEtat: " + getEtat().getEtat()
                    +"\nStatut: " + getStatut().getStatut()
-                   +"\nBorne: " + getBorne().getInfo()
-                ;
+                   +"\nBorne: " + getBorne().getInfo();
+        }
+        else{
+            s  = "Id: " + getId()
+                   +"\nDate de mise en service: " + getDateMiseEnService()
+                   +"\nEtat: " + getEtat().getEtat()
+                   +"\nStatut: " + getStatut().getStatut();
+        }
+        return s;
     }
 }

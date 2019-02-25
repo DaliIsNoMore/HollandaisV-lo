@@ -69,4 +69,15 @@ public class Location {
     public void setVelo(Velo velo) {
         this.velo = velo;
     }
+    
+    public String getInfo(){
+        String s;
+        return s = "ID de la location : "
+                + getId()
+                + "Velo :"
+                + getVelo().getInfo()
+                + "Date du début de la location"
+                + getDateDebut()
+                ;
+    }
 }

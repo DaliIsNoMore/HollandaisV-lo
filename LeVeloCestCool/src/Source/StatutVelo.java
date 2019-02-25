@@ -15,7 +15,7 @@ public class StatutVelo {
     private String statut;
     private static int nb;
 
-    public StatutVelo(int id, String statut) {
+    public StatutVelo( String statut) {
         nb++;
         this.id = nb;
         this.statut = statut;

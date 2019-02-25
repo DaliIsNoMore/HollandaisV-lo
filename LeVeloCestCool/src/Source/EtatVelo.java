@@ -15,7 +15,7 @@ public class EtatVelo {
     private String etat;
     private static int nb;
 
-    public EtatVelo(int id, String etat) {
+    public EtatVelo( String etat) {
         nb++;
         this.id = nb;
         this.etat = etat;

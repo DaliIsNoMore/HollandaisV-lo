@@ -83,7 +83,7 @@ public class GestionTechnicien {
         v=rechercheVelo(id);
                
          if(null!=v){
-             v.setStatut(listeStatutVelo.get(2));//ajouter en 3e position la destruction
+             v.setStatut(listeStatutVelo.get(2));
              supprimer=true;
          }
          
@@ -284,7 +284,7 @@ public class GestionTechnicien {
         FicheReparation f;
     
         f= new FicheReparation(d,pr,p,tr,v,t);
-    
+        v.setStatut(listeStatutVelo.get(1));
         return f;
     }
     
@@ -317,7 +317,7 @@ public class GestionTechnicien {
                }
 
 
-            fr.getVelo().setStatut(null);
+            fr.getVelo().setStatut(listeStatutVelo.get(3));
             fr.getVelo().setEtat(listeEtatVelo.get(2));
 
 
@@ -358,8 +358,23 @@ public class GestionTechnicien {
         return trouve;
     }
 
+    public ArrayList<Velo> afficherVeloDisponible(){
+        ArrayList<Velo>listeVeloDisponible = new ArrayList();
+        
+        for (int i =1;i<=listeVelo.size();i++){
+            if(rechercheVelo(i).getStatut().getStatut() == listeStatutVelo.get(3).getStatut()){
+                listeVeloDisponible.add(rechercheVelo(i));
+            }
+        }
+        
+        return listeVeloDisponible;
+    }
 
+    public ArrayList<TypeReparation> rechercheListeTypeReparation(){
+            ArrayList<TypeReparation> t=listeTypeReparation;
 
+            return t;
+        }
 
 
             

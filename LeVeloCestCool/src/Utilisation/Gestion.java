@@ -57,6 +57,9 @@ public class Gestion {
      String mp;
      Abonne a= null;
      MembreSociete m = null;
+     Technicien t = null;
+     Gestionnaire g = null;
+     
      
      do{
      System.out.println("1: Abonné, 2: Membre de la société");
@@ -75,19 +78,29 @@ public class Gestion {
      if (choix.equals("1"))
          {
           a = ga.rechercheAbonne(lg);
+          
           if(a!=null)
           {
             do{
-                if (a.getMp().equals(mp)) 
+                if (a.getMp().equals(mp) && ga.validiteDateAbonne(a)) 
                 {
                     menuAbonne(a);
+                    
                 } 
-                else
-                {
-                    System.out.println("Mauvais mot de passe");
+                else{
+                    if(ga.validiteDateAbonne(a))
+                    {
+                        System.out.println("Mauvais mot de passe");
+                    }
+                    else{
+                        //menuAbonneR(a);
+                    }
                 }
+                    
             }while(!a.getMp().equals(mp));  
-          } 
+          }
+          else{ System.out.println("Abonné non trouvé");
+          }
          }
          else
          {
@@ -101,19 +114,26 @@ public class Gestion {
                         {
                             if (m instanceof Gestionnaire)
                             {
-                                menuGestionnaire((Gestionnaire)m);
+                                g= (Gestionnaire)m;
+                                menuGestionnaire(g);
+                                System.out.println("Gestion");
                             }
                             else
                             {
-                                menuTechnicien((Technicien)m);
+                                t =(Technicien)m;
+                                menuTechnicien(t);
+                                System.out.println("Technicien");
                             }
                         } 
                         else
                         {
                             System.out.println("Mauvais mot de passe");
                         }
-                    }while(!m.getMp().equals(mp));          
-                } 
+                    }while(!m.getMp().equals(mp));
+                }
+                 else{
+                        System.out.println("wut");    
+                            }
              }
          }
     accueil();
@@ -140,15 +160,15 @@ public class Gestion {
                 menuAbonne(a);
                 break;
             case 2:
-                //supprimerCompteAbonne(a);
-                menuAbonne(a);
+                supprimerCompteAbonne(a);
+                accueil();
                 break;
             case 3:
-                //créerLocation();
+                creerLocation(a);
                 menuAbonne(a);
                 break;
             case 4:
-                //modifierLocation();
+                modifierLocation(a);
                 menuAbonne(a);
                 break;
             default: accueil();
@@ -227,10 +247,57 @@ public class Gestion {
         }
     }
 
+    public void supprimerCompteAbonne(Abonne a){
+        
+        if(ga.supprimerAbonne(a)){
+            System.out.print("Suppression effectuée");
+        }
+    }
     
+    public Location creerLocation(Abonne a){
+        Location l= null;
+        Date d=new Date();
+        Velo v=null;
+        int id;
+        ArrayList<StatutVelo> listeStatutVelo = gt.getListeStatutVelo();
+        
+        
+        for (int i = 0; i<gt.afficherVeloDisponible().size();i++){
+            System.out.println(gt.afficherVeloDisponible().get(i).getInfo());
+        }
+        System.out.print("Selectionnez le vélo en tappant l'id de votre choix");
+        id = Clavier.lireInt();
+        
+        v= gt.rechercheVelo(id);
+        l = ga.creerLocation(d, a, v, listeStatutVelo);
+        ga.getListeLocation().add(l);
+        
+        return l;
+    }
     
-    public void menuGestionnaire(Gestionnaire m)
-    {
+    public void modifierLocation(Abonne a){
+        Location l = ga.rechercheLocationAbonne(a);
+        Date d = new Date();
+        int ide;
+        EtatVelo e;
+        boolean run;
+        int idv;
+        
+        idv=l.getVelo().getId();
+        transfererBorneVelo(idv);        
+        afficherListeEtatVeloM();
+        System.out.println("Selectionnez l'état du vélo");
+        ide = Clavier.lireInt();
+        e = gt.rechercheEtatVelo(ide);
+        run = gt.modifierVelo(l.getVelo().getId(), 2, null, e , null, null);
+        run = gt.modifierVelo(l.getVelo().getId(), 3, null, null , gt.getListeStatutVelo().get(3), null); 
+        ga.getListeLocation().get(l.getId()).setDateFin(d);
+        
+        System.out.print("Location finie");
+ 
+    }
+    
+    public void menuGestionnaire(Gestionnaire m){
         int choix;
         
         System.out.println("Choisissez votre option:");
@@ -242,15 +309,15 @@ public class Gestion {
         switch (choix)
         {
             case 1:
-                //abonneRetard();
+                abonneRetard();
                 menuGestionnaire(m);
                 break;
             case 2:
-                //abonneRappelExpiration();
+                abonneRappelExpiration();
                 menuGestionnaire(m);
                 break;
             case 3:
-                //afficherVeloReparation();
+                afficherVeloReparation();
                 menuGestionnaire(m);
                 break;
         }
@@ -327,27 +394,27 @@ public class Gestion {
         switch (choix)
         {
             case 1:
-                //creerBorne();
+                creerBorne();
                 menuTechnicien(t);
                 break;
             case 2:
-                //modifierBorne();
+                modifierBorne();
                 menuTechnicien(t);
                 break;
             case 3:
-                //supprimerBorne();
+                supprimerBorne();
                 menuTechnicien(t);
                 break;
             case 4:
-                //creerVelo();
+                creerVelo();
                 menuTechnicien(t);
                 break;
             case 5:
-                //modifierVelo();
+                modifierVelo();
                 menuTechnicien(t);
                 break;
             case 6:
-                //supprimerVelo();
+                supprimerVelo();
                 menuTechnicien(t);
                 break;
             case 7:
@@ -363,13 +430,152 @@ public class Gestion {
                 menuTechnicien(t);
                 break;
             
-        }
-        
+        }  
     }
     
-    public void creerCompteAbonne()
-    {
+     public void afficherListeTypeReparation(){
+        ArrayList<TypeReparation>rechercheListeTypeReparation=gt.rechercheListeTypeReparation();
+        int i=0;
         
+        for (i=0;i<rechercheListeTypeReparation.size();i++){
+            i++;
+            System.out.println(i + " : "+ rechercheListeTypeReparation.get(i).getType());
+            i--;
+        }
+      } 
+
+    public void creerFicheReparation (Technicien t) {
+     int id, jour, mois, annee,idTypeReparation;
+     Date d;
+     Double pr;
+     String p;
+     TypeReparation tr;
+     Velo v=null;
+     
+     
+       System.out.println("Veuillez rentrer la date de récuperation du velo:");
+        System.out.println("Quel jour?");
+        jour = Clavier.lireInt();
+        System.out.println("Quel mois ?");
+        mois = Clavier.lireInt();
+        System.out.println("Quelle année?");
+        annee = Clavier.lireInt();
+        
+        d = new Date(annee - 1900, mois-1, jour);
+        
+     do
+        {
+            System.out.println("Entrez l'id du vélo à envoyer en réparation ?");
+            id = Clavier.lireInt();
+            
+            v=gt.rechercheVelo(id);
+            
+            if(v==null){
+             System.out.println("Vélo introuvable");  
+             }  
+                
+          }while(v==null);
+     
+          System.out.println("Entrez le problème :");
+          p=Clavier.lireString();
+          
+          
+     do{
+            afficherListeTypeReparation();
+            System.out.println("Choisissez votre option");
+            idTypeReparation = Clavier.lireInt()-1;
+            if (idTypeReparation<0 || idTypeReparation>(gt.rechercheListeTypeReparation().size()-1)){
+                System.out.println("Veuillez rentrer un nombre disponible");
+            }
+        }while(idTypeReparation<0 || idTypeReparation>(gt.rechercheListeTypeReparation().size()-1));
+        
+        tr = gt.rechercheTypeReparation(idTypeReparation);
+        
+        
+            System.out.println("Entrez le prix de la réparation");
+            pr = Clavier.lireDouble();
+            
+         gt.creerFicheReparation(d, pr, p, tr, v, t);
+    }
+
+public void finaliserFicheReparation(){
+    int id;
+    
+    
+    System.out.println("Entre l'id du vélo concerné ");
+    id=Clavier.lireInt();
+    
+    if(gt.finaliserFicheReparation(id)){
+        System.out.println("Fiche réparation close à la date du jour");
+    }
+    else{
+        System.out.println("Pas de fiche de réparation concernant ce vélo");
+    }
+    
+    transfererBorneVelo(id);
+}
+
+public void transfererBorneVelo(){
+    int idv,idb;
+    Velo v;
+    Borne b;
+ 
+    
+    do{
+         System.out.println("Entre l'id du vélo concerné ");
+        idv=Clavier.lireInt();
+    
+        v=gt.rechercheVelo(idv); 
+        if(v==null){
+            System.out.println("Vélo introuvable");
+            }
+    } while (v==null);
+    
+    do{
+             System.out.println("Entre l'id de la borne concernée ");
+            idb=Clavier.lireInt();
+    
+            b=gt.rechercheBorne(idb); 
+            if(v==null){
+                    System.out.println("Borne introuvable");
+                    }
+    } while (v==null);
+  
+    if(gt.deposerVelo(v, b)){
+            System.out.println("Vélo transferer à la borne "+ b.getId()+ "se situant à l'adresse : "+ b.getAdresse());
+        }
+    else {
+             System.out.println("Nombre de place insuffisante à la borne");
+            }
+    
+}
+public void transfererBorneVelo(int id){
+    Velo v;
+    Borne b;
+    int idb;
+    
+         v=gt.rechercheVelo(id); 
+         
+        do{
+                 System.out.println("Entre l'id de la borne concernée ");
+                 idb=Clavier.lireInt();
+    
+                b=gt.rechercheBorne(idb); 
+                if(b==null){
+                    System.out.println("Borne introuvable");
+                    }
+        } while (b==null);
+        
+     if(gt.deposerVelo(v, b)){
+            System.out.println("Vélo transferer à la borne "+ b.getId()+ "se situant à l'adresse : "+ b.getAdresse());
+        }  
+     else {
+             System.out.println("Nombre de place insuffisante à la borne");
+            }
+}
+
+    
+    public void creerCompteAbonne(){
         String lg;
         String mp;
         String nom;
@@ -404,9 +610,10 @@ public class Gestion {
         }while(!confirmation.equals("1"));
         
         ga.creerAbonne(lg,mp, nom, prenom, adresse, email, telephone, dateDebutAbonnement);
+        if (!ga.getListeAbonne().isEmpty()){
+            System.out.println("Profil abonné créé");
+        }        
         
-        
-        System.out.println("Profil abonné créé");
     }
     
     public String verificationLoginAbonne()
@@ -437,10 +644,7 @@ public class Gestion {
         Abonne a = null;
         
         a = ga.rechercheAbonne(lg);
-        if (a==null)
-        {
-            System.out.println("Abonne non trouvé");
-        }
+        
         return a;
     }
     
@@ -462,11 +666,11 @@ public class Gestion {
     
     public void menuBorne(Technicien t){
     int n;
+    
     System.out.println("Que voulez vous faire?");
     System.out.println("Créer une nouvelle borne");
     System.out.println("Modifier une borne");
     System.out.println("Supprimer une borne");
-
     n=Clavier.lireInt();
 
     switch (n){
@@ -476,20 +680,16 @@ public class Gestion {
             menuBorne(t);
             break;
 
-
         case 2:
             //modifierBorne();
             menuBorne(t);
             break;
 
-
         case 3 :
             //supprimerBorne();
             menuBorne(t);
             break;
-
-
-
+            
         default :
             menuTechnicien(t);        
     }
@@ -803,11 +1003,113 @@ public class Gestion {
         }
         if(gt.modifierVelo(id, choix, d, e, s, b)){
             System.out.println("modification effectuée");
-        }
-        
-        
+        }   
+    }
+    
+public void  initialisation(){
+    
+    Gestionnaire g;
+    Technicien t;
+    int n =2;
+    String x;
+    ArrayList<Borne>initialisationB= new ArrayList();
+    Borne b;
+    
+    TypeReparation tr;
+    ArrayList<Velo>initialisationV= new ArrayList();
+    Velo v;
+    EtatVelo e;
+    StatutVelo s;
+    int i = 0;
+    
+    for (i=0; i< n; i++){
+        x =i+ "Luix";
+        g = new Gestionnaire(x, x, "Jean "+x, "Roger "+x, new Date());
+        gg.getListeMembreSociete().add(g);
+        System.out.println("Profil Gestionnaire : " + g.getInfos() + "\n");
+    }
+    System.out.println("---------------- Gestionnaires initialisés ---------------");
+    i = 0;
+    for (i=0; i< n; i++){
+        x =i+ "Lui";
+        t = new Technicien(x, x, "Michel "+x, "Patrick "+x, new Date());
+        gg.getListeMembreSociete().add(t);
+        System.out.println("Profil Technicien : " + t.getInfos() + "\n");
     }
     
     
+    System.out.println("---------------- Techniciens initialisés ---------------");
+    
+    n = 4;
+    i = 0;
+    
+    for (i=0; i< n-1; i++){
+        x = "3" + i+ "rue Enrouée";
+        i++;
+        b = new Borne(x, i);
+        initialisationB.add(b);
+        System.out.println("Borne : " + b.getInfo() + "\n");
+        i--;
+    }
+    gt.setListeBorne(initialisationB);
+    System.out.println("---------------- Bornes initialisés ---------------");
+   
+    i = 0;
+    
+    for (i=0; i< n; i++){
+        x = "Réparation de la visse n°"+ i;
+        
+        tr = new TypeReparation(x);
+        gt.getListeTypeReparation().add(tr);
+        System.out.println("Type de réparation : " + tr.getId() + "\n");
+        
+    }
+    
+    System.out.println("---------------- Types de réparations initialisés ---------------");
+    
+    
+    e = new EtatVelo("Mauvais");
+    gt.getListeEtatVelo().add(e);
+    System.out.println("Etat:" + e.getEtat() + " ID:"+ e.getId());
+    e = new EtatVelo("Moyen");
+    gt.getListeEtatVelo().add(e);
+    System.out.println("Etat:" + e.getEtat() + " ID:"+ e.getId());
+    e = new EtatVelo("Bon");
+    gt.getListeEtatVelo().add(e);
+    System.out.println("Etat:" + e.getEtat() + " ID:"+ e.getId());
+    System.out.println("---------------- Etats de vélo initialisés ---------------");
+    
+    s = new StatutVelo("En cours de location");
+    gt.getListeStatutVelo().add(s);
+    System.out.println("Statut:" + s.getStatut() + " ID:"+ s.getId());
+    s = new StatutVelo("En cours de réparation");
+    gt.getListeStatutVelo().add(s);
+    System.out.println("Statut:" + s.getStatut() + " ID:"+ s.getId());
+    s = new StatutVelo("Détruit");
+    gt.getListeStatutVelo().add(s);
+    System.out.println("Statut:" + s.getStatut() + " ID:"+ s.getId());
+    s = new StatutVelo("Disponible");
+    gt.getListeStatutVelo().add(s);
+    System.out.println("Statut:" + s.getStatut() + " ID:"+ s.getId());
+    System.out.println("---------------- Statuts de vélo initialisés ---------------");
+    
+    
+    n = (gt.getListeEtatVelo().size()-1)*(gt.getListeStatutVelo().size()-1)+1;
+    int u = 0;
+    i = 0;
+    
+    for (i=0; u*i< n; i++){
+        v = new Velo(new Date(),gt.getListeEtatVelo().get(i), gt.getListeStatutVelo().get(u));
+        initialisationV.add(v);
+        System.out.println("Velo : " + v.getInfo() + "\n");
+        
+        if ((i*u<n-1)&&(i == gt.getListeEtatVelo().size()-1)){u++;i=-1;}
+    }
+    gt.setListeVelo(initialisationV);
+    System.out.println("---------------- Vélos initialisés ---------------");
+    
+    
+}
+   
 }
 

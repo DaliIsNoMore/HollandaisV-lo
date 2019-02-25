@@ -22,7 +22,7 @@ public class GestionAbonne {
     public GestionAbonne(){
         listeAbonne = new ArrayList();
         listeLocation = new ArrayList();
-        
+       
     }
     
     public ArrayList<Abonne> getListeAbonne() {
@@ -69,11 +69,12 @@ public class GestionAbonne {
     
     public Location creerLocation (Date dateDebut, Abonne abonne, Velo velo, ArrayList<StatutVelo> listeStatutVelo){
     Location l= null;
+    StatutVelo s = listeStatutVelo.get(0);
     
-    
-    if (!velo.getStatut().equals(listeStatutVelo.get(2).getStatut())){
+    if (velo.getStatut().equals(listeStatutVelo.get(3).getStatut())){
     l=new Location (dateDebut, abonne, velo);
     listeLocation.add(l);
+    velo.setStatut(s);
     }
     
     return l;
@@ -178,5 +179,35 @@ public class GestionAbonne {
         }
         
         return l;
+    }
+    
+    public Location rechercheLocationAbonne(Abonne a){
+        Location l= null;
+        int i = listeLocation.size();
+        
+        while (i>0&&l == null){
+            if(a==listeLocation.get(i).getAbonne()){
+                    l=listeLocation.get(i);
+            }
+            i--;
+        }
+        
+        return l;
+    }
+    
+    public boolean validiteDateAbonne(Abonne a){
+        boolean valide = false;
+        Date d = new Date();
+        int jourDifference = 365;
+        long valeurDateDebut;
+        long valeurDateFin = d.getTime();
+        long valeurDateDifference = jourDifference* 86400000;
+               
+        valeurDateDebut = a.getDateDebutAbonnement().getTime();
+        if (valeurDateFin - valeurDateDebut < valeurDateDifference){
+            valide = true;
+        }
+         
+        return valide;
     }
 }

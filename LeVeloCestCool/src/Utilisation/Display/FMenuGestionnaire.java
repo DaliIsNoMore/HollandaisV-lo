@@ -21,12 +21,22 @@ public class FMenuGestionnaire extends javax.swing.JFrame {
     private static GestionAbonne ga;
     private static GestionTechnicien gt;
     private static GestionGestionnaire gg;
+    private String [] liste;
     
     public FMenuGestionnaire(Gestionnaire g) {
         initComponents();
         ga = GestionFinal.getGa();
         gt = GestionFinal.getGt();
         gg = GestionFinal.getGg();
+        
+        ArrayList<Velo>listeVeloMauvaisEtat = gt.getListeVelo(); 
+        ArrayList<EtatVelo>listeEtatVelo = gt.getListeEtatVelo();
+        listeVeloMauvaisEtat = gg.RechercheVeloMauvaisEtat(listeVeloMauvaisEtat, listeEtatVelo);
+        liste = new String[listeVeloMauvaisEtat.size()];
+        for(int i = 0;i<listeVeloMauvaisEtat.size();i++){
+                liste[i]="Velo en mauvais état :"+listeVeloMauvaisEtat.get(i).getInfo();
+            }
+        TabVeloRep.setListData(liste);
     }
 
     /**
@@ -42,11 +52,11 @@ public class FMenuGestionnaire extends javax.swing.JFrame {
         BoutonFermer = new javax.swing.JButton();
         BoutonRetour = new javax.swing.JButton();
         BoutonMessageRetard = new javax.swing.JButton();
-        BoutonLoadnSendVelo = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        TabVeloRep = new javax.swing.JTable();
+        BoutonSendVelo = new javax.swing.JButton();
         lblGestionAbonne = new javax.swing.JLabel();
         lblGestionVelo = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        TabVeloRep = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -74,14 +84,23 @@ public class FMenuGestionnaire extends javax.swing.JFrame {
             }
         });
 
-        BoutonLoadnSendVelo.setText("Générer et envoyer");
-
-        TabVeloRep.setColumnSelectionAllowed(true);
-        jScrollPane1.setViewportView(TabVeloRep);
+        BoutonSendVelo.setText("Envoyer");
+        BoutonSendVelo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                BoutonSendVeloMouseClicked(evt);
+            }
+        });
 
         lblGestionAbonne.setText("Gestion Abonné");
 
         lblGestionVelo.setText("Gestion Vélo");
+
+        TabVeloRep.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(TabVeloRep);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -104,42 +123,40 @@ public class FMenuGestionnaire extends javax.swing.JFrame {
                         .addGap(136, 136, 136)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblGestionVelo)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 231, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 229, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(BoutonLoadnSendVelo)
-                .addGap(392, 392, 392))
+                .addComponent(BoutonSendVelo)
+                .addGap(420, 420, 420))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(BoutonFermer)
-                            .addComponent(BoutonRetour))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblGestionVelo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(200, 200, 200)
-                        .addComponent(lblGestionAbonne)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(BoutonMessageRetard)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(BoutonLoadnSendVelo)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BoutonFermer)
+                    .addComponent(BoutonRetour))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblGestionVelo)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(BoutonSendVelo)
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(200, 200, 200)
+                .addComponent(lblGestionAbonne)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(BoutonMessageRetard)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 987, Short.MAX_VALUE)
+            .addGap(0, 1020, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -207,6 +224,31 @@ public class FMenuGestionnaire extends javax.swing.JFrame {
         
     }//GEN-LAST:event_BoutonMessageRetardMouseClicked
 
+    private void BoutonSendVeloMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BoutonSendVeloMouseClicked
+        // TODO add your handling code here:
+        
+        
+         ArrayList<Velo>listeVeloMauvaisEtat = gt.getListeVelo(); 
+        ArrayList<EtatVelo>listeEtatVelo = gt.getListeEtatVelo();
+        Technicien t =null;
+        int i;
+        
+        listeVeloMauvaisEtat = gg.RechercheVeloMauvaisEtat(listeVeloMauvaisEtat, listeEtatVelo);
+        if(!listeVeloMauvaisEtat.isEmpty()){
+            
+
+            i = 0;
+
+            while(i<gg.getListeMembreSociete().size()&& t==null){
+                if (gg.getListeMembreSociete().get(i) instanceof Technicien){
+                    t = (Technicien)gg.getListeMembreSociete().get(i);
+                    t.setListeVeloMauvaisEtat(listeVeloMauvaisEtat);
+                }
+                i++;
+            }
+        }
+    }//GEN-LAST:event_BoutonSendVeloMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -244,12 +286,12 @@ public class FMenuGestionnaire extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BoutonFermer;
-    private javax.swing.JButton BoutonLoadnSendVelo;
     private javax.swing.JButton BoutonMessageRetard;
     private javax.swing.JButton BoutonRetour;
-    private javax.swing.JTable TabVeloRep;
+    private javax.swing.JButton BoutonSendVelo;
+    private javax.swing.JList<String> TabVeloRep;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblGestionAbonne;
     private javax.swing.JLabel lblGestionVelo;
     // End of variables declaration//GEN-END:variables

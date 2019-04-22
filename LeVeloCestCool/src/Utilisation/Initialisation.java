@@ -8,7 +8,8 @@ package Utilisation;
 /**
  *
  * @author GREGO
- *//*
+ */
+/*
 public class Initialisation {
     public void initialisation()
     {
